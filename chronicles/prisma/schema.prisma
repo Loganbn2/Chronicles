@@ -37,6 +37,7 @@ model Chat {
   user       User?     @relation(fields: [userId], references: [id])
 
   messages   Message[]
+  images     SceneImage[]
 }
 
 model Message {
@@ -44,6 +45,16 @@ model Message {
   createdAt DateTime @default(now())
   role      String
   content   String
+
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
+
+model SceneImage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  url       String
+  caption   String?
 
   chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
