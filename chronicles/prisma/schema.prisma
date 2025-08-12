@@ -1,0 +1,50 @@
+// Prisma schema for Chronicles
+// Switched to Supabase Postgres using only DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  chats     Chat[]
+}
+
+model Chat {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  title         String
+  storylineId   String?
+  pcName        String?
+  pcRole        String?
+  pcBackground  String?
+  pcGoals       String?
+  pcEra         String?
+  pcAllegiances String?
+  pcTraits      String[]  @default([])
+  pcSkills      String[]  @default([])
+
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id])
+
+  messages   Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  role      String
+  content   String
+
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
